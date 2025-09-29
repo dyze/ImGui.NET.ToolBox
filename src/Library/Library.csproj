@@ -22,9 +22,11 @@ Only contains ColoredButton and Open/Save File dialogs for now</PackageReleaseNo
   </PropertyGroup>
 
 	<PropertyGroup>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<AssemblyName>ImGui.NET.ToolBox</AssemblyName>
-		<Version>0.1</Version>
+		<AssemblyVersion>0.2.0.0</AssemblyVersion>
+		<FileVersion>$(AssemblyVersion)</FileVersion>
+		<Version>$(AssemblyVersion)</Version>
+		<Company>dlabs</Company>
 	</PropertyGroup>
 
 
