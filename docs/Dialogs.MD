@@ -2,7 +2,9 @@
 
 ## Open/Save File dialogs
 
-The example triggers an Open file dialog.
+The example triggers an Open file dialog:
+
+![image](./OpenFileDialog.png)
 
 First keep somewhere a reference to **FileDialogInfo**.
 
