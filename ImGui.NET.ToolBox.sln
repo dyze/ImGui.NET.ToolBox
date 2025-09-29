@@ -15,6 +15,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "src\Library\Libr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCenter", "samples\DemoCenter\DemoCenter.csproj", "{B0E06A06-848F-43EA-82A2-542FD24A1DAF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{071DAFBD-3162-48F0-9A01-CEFE208AC053}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Controls.MD = docs\Controls.MD
+		docs\index.MD = docs\index.MD
+		docs\Dialogs.MD = docs\Dialogs.MD
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -28,8 +28,8 @@ For detailed documentation, please read [this](./docs/index.MD).
 ## Roadmap
 
 For 0.1 version, I aim the following:
-* [ ] Add file dialog controls
-* [ ] First nuget package.
+* [x] Add file dialog controls
+* [x] First nuget package.
 
 
 ## Contributing
