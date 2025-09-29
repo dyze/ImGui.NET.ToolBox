@@ -6,6 +6,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{02EA681E-C
 	ProjectSection(SolutionItems) = preProject
 		build.cmd = build.cmd
 		build.sh = build.sh
+		CHANGELOG.md = CHANGELOG.md
 		LICENSE = LICENSE
 		NuGet.Config = NuGet.Config
 		README.md = README.md
