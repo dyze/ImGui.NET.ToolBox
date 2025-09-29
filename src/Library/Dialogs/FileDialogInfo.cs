@@ -1,5 +1,11 @@
 namespace ImGuiNET;
 
+public enum ImGuiFileDialogType
+{
+    OpenFile,
+    SaveFile
+}
+
 public class FileDialogInfo
 {
     public string Title;

@@ -4,10 +4,58 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>ImGUI.NET.ToolBox</PackageId>
+    <Title>ImGUI.NET.ToolBox</Title>
+    <Authors>dyze</Authors>
+    <Company>dlabs</Company>
+    <Product>ImGUI.NET.ToolBox</Product>
+    <Description>ImGui.NET.ToolBox is a set of controls and helpers for ImGui.NET</Description>
+    <Copyright>dlabs 2025</Copyright>
+    <PackageProjectUrl>https://github.com/dyze/ImGui.NET.ToolBox</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/dyze/ImGui.NET.ToolBox</RepositoryUrl>
+    <PackageTags>imgui, .net, controls, ui</PackageTags>
+    <PackageReleaseNotes>First version
+Only contains ColoredButton and Open/Save File dialogs for now</PackageReleaseNotes>
+    <PackageOutputPath>../../artifacts</PackageOutputPath>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
+
+	<PropertyGroup>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<AssemblyName>ImGui.NET.ToolBox</AssemblyName>
+		<Version>0.1</Version>
+	</PropertyGroup>
+
+
+	<ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="ImGui.NET" Version="1.91.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

@@ -14,7 +14,7 @@ public static class ColoredButton
     /// </summary>
     /// <param name="color">Color in normal mode</param>
     /// <param name="text"></param>
-    /// <returns></returns>
+    /// <returns>true if button pressed</returns>
     public static bool Run(Color color, string text)
     {
         var vColor = TypeConverters.ColorToVector4(color);

@@ -1,6 +1,6 @@
 ## About The Project
 
-This a set of controls and helpers for [ImGui.NET](https://github.com/ImGuiNET/ImGui.NET).
+**ImGui.NET.ToolBox** a set of controls and helpers for [ImGui.NET](https://github.com/ImGuiNET/ImGui.NET).
 The current supported ImGui.NET version is 1.91.
 
 ### Built With

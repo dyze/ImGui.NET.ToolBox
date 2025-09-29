@@ -8,12 +8,6 @@ using System.Numerics;
 
 namespace ImGuiNET
 {
-    public enum ImGuiFileDialogType
-    {
-        OpenFile,
-        SaveFile
-    }
-
     public enum ImGuiFileDialogSortOrder
     {
         Up,
@@ -23,19 +17,6 @@ namespace ImGuiNET
 
     public class FileDialog
     {
-        private static void RefreshInfo(FileDialogInfo dialogInfo)
-        {
-            dialogInfo.RefreshInfo = false;
-            dialogInfo.CurrentIndex = 0;
-            dialogInfo.CurrentFiles.Clear();
-            dialogInfo.CurrentDirectories.Clear();
-
-            var directory = new DirectoryInfo(dialogInfo.DirectoryPath.FullName);
-
-            dialogInfo.CurrentDirectories = directory.GetDirectories().ToList();
-            dialogInfo.CurrentFiles = directory.GetFiles(dialogInfo.CurrentExtension.Item1).ToList();
-        }
-
         private static float _initialSpacingColumn0 = 230.0f;
         private static float _initialSpacingColumn1 = 80.0f;
         private static float _initialSpacingColumn2 = 90.0f;
@@ -49,113 +30,6 @@ namespace ImGuiNET
         private static ImGuiFileDialogSortOrder _dateSortOrderCopy = ImGuiFileDialogSortOrder.None;
         private static ImGuiFileDialogSortOrder _typeSortOrderCopy = ImGuiFileDialogSortOrder.None;
 
-        private static void Sort(FileDialogInfo dialogInfo, bool forceSort = false)
-        {
-            //var directories = dialogInfo.currentDirectories;
-            //var files = dialogInfo.currentFiles;            
-            var sort = false;
-
-            if (_fileNameSortOrderCopy != _fileNameSortOrder)
-            {
-                _fileNameSortOrderCopy = _fileNameSortOrder;
-                sort = true;
-            }
-
-            if (_sizeSortOrderCopy != _sizeSortOrder)
-            {
-                _sizeSortOrderCopy = _sizeSortOrder;
-                sort = true;
-            }
-
-            if (_dateSortOrderCopy != _dateSortOrder)
-            {
-                _dateSortOrderCopy = _dateSortOrder;
-                sort = true;
-            }
-
-            if (_typeSortOrderCopy != _typeSortOrder)
-            {
-                _typeSortOrderCopy = _typeSortOrder;
-                sort = true;
-            }
-
-            if (!sort && !forceSort)
-                return;
-
-            // Sort directories
-
-            if (_fileNameSortOrder != ImGuiFileDialogSortOrder.None || _sizeSortOrder != ImGuiFileDialogSortOrder.None || _typeSortOrder != ImGuiFileDialogSortOrder.None)
-            {
-                if (_fileNameSortOrder == ImGuiFileDialogSortOrder.Down)
-                {
-                    dialogInfo.CurrentDirectories = dialogInfo.CurrentDirectories.OrderBy(i => i.Name).ToList();
-                }
-                else
-                {
-                    dialogInfo.CurrentDirectories = dialogInfo.CurrentDirectories.OrderBy(i => i.Name).ToList();
-                    dialogInfo.CurrentDirectories.Reverse();
-                }
-            }
-            else if (_dateSortOrder != ImGuiFileDialogSortOrder.None)
-            {
-                if (_dateSortOrder == ImGuiFileDialogSortOrder.Down)
-                {
-                    dialogInfo.CurrentDirectories.Sort((a, b) => a.LastWriteTime > b.LastWriteTime ? 1 : 0);
-                }
-                else
-                {
-                    dialogInfo.CurrentDirectories.Sort((a, b) => a.LastWriteTime < b.LastWriteTime ? 1 : 0);
-                }
-            }
-
-            // Sort files
-            if (_fileNameSortOrder != ImGuiFileDialogSortOrder.None)
-            {
-                if (_fileNameSortOrder == ImGuiFileDialogSortOrder.Down)
-                {
-                    dialogInfo.CurrentFiles = dialogInfo.CurrentFiles.OrderBy(i => i.Name).ToList();
-                }
-                else
-                {
-                    dialogInfo.CurrentFiles = dialogInfo.CurrentFiles.OrderBy(i => i.Name).ToList();
-                    dialogInfo.CurrentFiles.Reverse();
-                }
-            }
-            else if (_sizeSortOrder != ImGuiFileDialogSortOrder.None)
-            {
-                if (_sizeSortOrder == ImGuiFileDialogSortOrder.Down)
-                {
-                    dialogInfo.CurrentFiles.Sort((a, b) => a.Length > b.Length ? 1 : 0);
-                }
-                else
-                {
-                    dialogInfo.CurrentFiles.Sort((a, b) => a.Length < b.Length ? 1 : 0);
-                }
-            }
-            else if (_typeSortOrder != ImGuiFileDialogSortOrder.None)
-            {
-                if (_typeSortOrder == ImGuiFileDialogSortOrder.Down)
-                {
-                    dialogInfo.CurrentFiles = dialogInfo.CurrentFiles.OrderBy(i => i.Extension).ToList();
-                }
-                else
-                {
-                    dialogInfo.CurrentFiles = dialogInfo.CurrentFiles.OrderBy(i => i.Extension).ToList();
-                    dialogInfo.CurrentFiles.Reverse();
-                }
-            }
-            else if (_dateSortOrder != ImGuiFileDialogSortOrder.None)
-            {
-                if (_dateSortOrder == ImGuiFileDialogSortOrder.Down)
-                {
-                    dialogInfo.CurrentFiles.Sort((a, b) => a.LastWriteTime > b.LastWriteTime ? 1 : 0);
-                }
-                else
-                {
-                    dialogInfo.CurrentFiles.Sort((a, b) => a.LastWriteTime < b.LastWriteTime ? 1 : 0);
-                }
-            }
-        }
 
         public static bool Run(ref bool open,
             FileDialogInfo? dialogInfo)
@@ -254,7 +128,7 @@ namespace ImGuiNET
 
                 Sort(dialogInfo);
 
-                UInt64 index = 0;
+                ulong index = 0;
 
                 // Draw parent
                 if (dialogInfo.DirectoryPath.Parent != null)
@@ -509,6 +383,128 @@ namespace ImGuiNET
             dialogInfo.CurrentIndex = 0;
             dialogInfo.CurrentFiles.Clear();
             dialogInfo.CurrentDirectories.Clear();
+        }
+
+
+        private static void RefreshInfo(FileDialogInfo dialogInfo)
+        {
+            dialogInfo.RefreshInfo = false;
+            dialogInfo.CurrentIndex = 0;
+            dialogInfo.CurrentFiles.Clear();
+            dialogInfo.CurrentDirectories.Clear();
+
+            var directory = new DirectoryInfo(dialogInfo.DirectoryPath.FullName);
+
+            dialogInfo.CurrentDirectories = directory.GetDirectories().ToList();
+            dialogInfo.CurrentFiles = directory.GetFiles(dialogInfo.CurrentExtension.Item1).ToList();
+        }
+
+        private static void Sort(FileDialogInfo dialogInfo, bool forceSort = false)
+        {
+            //var directories = dialogInfo.currentDirectories;
+            //var files = dialogInfo.currentFiles;            
+            var sort = false;
+
+            if (_fileNameSortOrderCopy != _fileNameSortOrder)
+            {
+                _fileNameSortOrderCopy = _fileNameSortOrder;
+                sort = true;
+            }
+
+            if (_sizeSortOrderCopy != _sizeSortOrder)
+            {
+                _sizeSortOrderCopy = _sizeSortOrder;
+                sort = true;
+            }
+
+            if (_dateSortOrderCopy != _dateSortOrder)
+            {
+                _dateSortOrderCopy = _dateSortOrder;
+                sort = true;
+            }
+
+            if (_typeSortOrderCopy != _typeSortOrder)
+            {
+                _typeSortOrderCopy = _typeSortOrder;
+                sort = true;
+            }
+
+            if (!sort && !forceSort)
+                return;
+
+            // Sort directories
+
+            if (_fileNameSortOrder != ImGuiFileDialogSortOrder.None || _sizeSortOrder != ImGuiFileDialogSortOrder.None || _typeSortOrder != ImGuiFileDialogSortOrder.None)
+            {
+                if (_fileNameSortOrder == ImGuiFileDialogSortOrder.Down)
+                {
+                    dialogInfo.CurrentDirectories = dialogInfo.CurrentDirectories.OrderBy(i => i.Name).ToList();
+                }
+                else
+                {
+                    dialogInfo.CurrentDirectories = dialogInfo.CurrentDirectories.OrderBy(i => i.Name).ToList();
+                    dialogInfo.CurrentDirectories.Reverse();
+                }
+            }
+            else if (_dateSortOrder != ImGuiFileDialogSortOrder.None)
+            {
+                if (_dateSortOrder == ImGuiFileDialogSortOrder.Down)
+                {
+                    dialogInfo.CurrentDirectories.Sort((a, b) => a.LastWriteTime > b.LastWriteTime ? 1 : 0);
+                }
+                else
+                {
+                    dialogInfo.CurrentDirectories.Sort((a, b) => a.LastWriteTime < b.LastWriteTime ? 1 : 0);
+                }
+            }
+
+            // Sort files
+            if (_fileNameSortOrder != ImGuiFileDialogSortOrder.None)
+            {
+                if (_fileNameSortOrder == ImGuiFileDialogSortOrder.Down)
+                {
+                    dialogInfo.CurrentFiles = dialogInfo.CurrentFiles.OrderBy(i => i.Name).ToList();
+                }
+                else
+                {
+                    dialogInfo.CurrentFiles = dialogInfo.CurrentFiles.OrderBy(i => i.Name).ToList();
+                    dialogInfo.CurrentFiles.Reverse();
+                }
+            }
+            else if (_sizeSortOrder != ImGuiFileDialogSortOrder.None)
+            {
+                if (_sizeSortOrder == ImGuiFileDialogSortOrder.Down)
+                {
+                    dialogInfo.CurrentFiles.Sort((a, b) => a.Length > b.Length ? 1 : 0);
+                }
+                else
+                {
+                    dialogInfo.CurrentFiles.Sort((a, b) => a.Length < b.Length ? 1 : 0);
+                }
+            }
+            else if (_typeSortOrder != ImGuiFileDialogSortOrder.None)
+            {
+                if (_typeSortOrder == ImGuiFileDialogSortOrder.Down)
+                {
+                    dialogInfo.CurrentFiles = dialogInfo.CurrentFiles.OrderBy(i => i.Extension).ToList();
+                }
+                else
+                {
+                    dialogInfo.CurrentFiles = dialogInfo.CurrentFiles.OrderBy(i => i.Extension).ToList();
+                    dialogInfo.CurrentFiles.Reverse();
+                }
+            }
+            else if (_dateSortOrder != ImGuiFileDialogSortOrder.None)
+            {
+                if (_dateSortOrder == ImGuiFileDialogSortOrder.Down)
+                {
+                    dialogInfo.CurrentFiles.Sort((a, b) => a.LastWriteTime > b.LastWriteTime ? 1 : 0);
+                }
+                else
+                {
+                    dialogInfo.CurrentFiles.Sort((a, b) => a.LastWriteTime < b.LastWriteTime ? 1 : 0);
+                }
+            }
         }
     }
 }
