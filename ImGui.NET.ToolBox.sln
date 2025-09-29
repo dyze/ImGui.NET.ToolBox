@@ -1,0 +1,39 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35913.81
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		build.cmd = build.cmd
+		build.sh = build.sh
+		LICENSE = LICENSE
+		NuGet.Config = NuGet.Config
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "src\Library\Library.csproj", "{6EFEF967-27DB-4F27-AF8F-5DB8F8CD2342}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoCenter", "samples\DemoCenter\DemoCenter.csproj", "{B0E06A06-848F-43EA-82A2-542FD24A1DAF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6EFEF967-27DB-4F27-AF8F-5DB8F8CD2342}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EFEF967-27DB-4F27-AF8F-5DB8F8CD2342}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EFEF967-27DB-4F27-AF8F-5DB8F8CD2342}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EFEF967-27DB-4F27-AF8F-5DB8F8CD2342}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0E06A06-848F-43EA-82A2-542FD24A1DAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0E06A06-848F-43EA-82A2-542FD24A1DAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0E06A06-848F-43EA-82A2-542FD24A1DAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0E06A06-848F-43EA-82A2-542FD24A1DAF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = 6ab1ee43-1295-423c-99f2-3b733eceb6e8
+	EndGlobalSection
+EndGlobal
