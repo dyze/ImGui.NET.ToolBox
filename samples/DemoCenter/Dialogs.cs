@@ -1,15 +1,19 @@
 ﻿using ImGuiNET;
+using Library.Dialogs;
 
 
 namespace DemoCenter
 {
     internal static class Dialogs
     {
-        static bool OpenFileDialogIsOpen = false;
-        static bool SaveFileDialogIsOpen = false;
+        private static bool _openFileDialogIsOpen;
+        private static bool _saveFileDialogIsOpen = false;
 
-        static FileDialogInfo? _fileDialogInfo;
-        static string _fileDialogResult = "";
+        private static FileDialogInfo? _fileDialogInfo;
+        private static string _fileDialogResult = "";
+        private static string _messageDialogResult = "";
+
+        private static MessageDialog.Configuration? _messageDialogConfiguration;
 
         public static void Render()
         {
@@ -18,6 +22,7 @@ namespace DemoCenter
 
             RenderOpenFileDialog();
             RenderSaveFileDialog();
+            RenderMessageDialog();
         }
 
 
@@ -39,12 +44,12 @@ namespace DemoCenter
                             new Tuple<string, string>("*.*", "All files")
                         ]
                     };
-                    OpenFileDialogIsOpen = true;
+                    _openFileDialogIsOpen = true;
                 }
 
-                if (OpenFileDialogIsOpen)
+                if (_openFileDialogIsOpen)
                 {
-                    if (FileDialog.Run(ref OpenFileDialogIsOpen, _fileDialogInfo))
+                    if (FileDialog.Run(ref _openFileDialogIsOpen, _fileDialogInfo))
                     {
                         _fileDialogResult = _fileDialogInfo.ResultPath;
                     }
@@ -54,8 +59,6 @@ namespace DemoCenter
 
                 ImGui.TreePop();
             }
-
-
         }
 
         private static void RenderSaveFileDialog()
@@ -76,12 +79,12 @@ namespace DemoCenter
                             new Tuple<string, string>("*.*", "All files")
                         ]
                     };
-                    SaveFileDialogIsOpen = true;
+                    _saveFileDialogIsOpen = true;
                 }
 
-                if (SaveFileDialogIsOpen)
+                if (_saveFileDialogIsOpen)
                 {
-                    if (FileDialog.Run(ref SaveFileDialogIsOpen, _fileDialogInfo))
+                    if (FileDialog.Run(ref _saveFileDialogIsOpen, _fileDialogInfo))
                     {
                         _fileDialogResult = _fileDialogInfo.ResultPath;
                     }
@@ -93,5 +96,41 @@ namespace DemoCenter
             }
         }
 
+
+        private static void RenderMessageDialog()
+        {
+            if (ImGui.TreeNode("Message dialog"))
+            {
+                if (ImGui.Button("Trigger a Message dialog"))
+                {
+                    _messageDialogConfiguration = new("Current file has not been saved",
+                        "Are you sure you want to continue?",
+                        [
+                            new MessageDialog.ButtonConfiguration(MessageDialog.ButtonId.Yes, "Yes, I'm sure",
+                                _ => YesPressed(),
+                                System.Drawing.Color.Red),
+                            new MessageDialog.ButtonConfiguration(MessageDialog.ButtonId.No, "No, I changed my mind",
+                                null
+                            )
+                        ]);
+                }
+
+                var result = MessageDialog.Run(_messageDialogConfiguration);
+                if (result != null)
+                {
+                    _messageDialogResult = result.Id.ToString();
+                    _messageDialogConfiguration = null;
+                }
+
+                ImGui.Text($"Result={_messageDialogResult}");
+
+                ImGui.TreePop();
+            }
+        }
+
+        private static void YesPressed()
+        {
+
+        }
     }
 }

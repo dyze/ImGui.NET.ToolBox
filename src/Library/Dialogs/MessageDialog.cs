@@ -1,8 +1,9 @@
 
+using ImGuiNET;
 using System.Drawing;
 
 
-namespace ImGuiNET
+namespace Library.Dialogs
 {
     public class MessageDialog
     {
