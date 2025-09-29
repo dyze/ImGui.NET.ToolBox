@@ -1,2 +1,13 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using DemoCenter;
+
+namespace ConsumerSampleApp;
+
+class Program
+{
+    public static void Main()
+    {
+        var controller = new Controller();
+
+        controller.Run();
+    }
+}
