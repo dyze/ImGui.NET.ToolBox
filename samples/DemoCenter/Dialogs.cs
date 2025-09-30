@@ -7,7 +7,8 @@ namespace DemoCenter
     internal static class Dialogs
     {
         private static bool _openFileDialogIsOpen;
-        private static bool _saveFileDialogIsOpen = false;
+        private static bool _saveFileDialogIsOpen;
+        private static bool _selectFolderDialogIsOpen;
 
         private static FileDialogInfo? _fileDialogInfo;
         private static string _fileDialogResult = "";
@@ -22,9 +23,9 @@ namespace DemoCenter
 
             RenderOpenFileDialog();
             RenderSaveFileDialog();
+            RenderSelectFolderDialog();
             RenderMessageDialog();
         }
-
 
         private static void RenderOpenFileDialog()
         {
@@ -96,6 +97,35 @@ namespace DemoCenter
             }
         }
 
+        private static void RenderSelectFolderDialog()
+        {
+            if (ImGui.TreeNode("Select folder dialog"))
+            {
+                if (ImGui.Button("Trigger Select folder dialog"))
+                {
+                    _fileDialogInfo = new()
+                    {
+                        Title = "Please select a folder",
+                        Type = ImGuiFileDialogType.SelectFolder,
+                        DirectoryPath = new DirectoryInfo(Directory.GetCurrentDirectory()),
+                        DirectoryName = ""
+                    };
+                    _selectFolderDialogIsOpen = true;
+                }
+
+                if (_selectFolderDialogIsOpen)
+                {
+                    if (FileDialog.Run(ref _selectFolderDialogIsOpen, _fileDialogInfo))
+                    {
+                        _fileDialogResult = _fileDialogInfo.ResultPath;
+                    }
+                }
+
+                ImGui.Text($"Result={_fileDialogResult}");
+
+                ImGui.TreePop();
+            }
+        }
 
         private static void RenderMessageDialog()
         {

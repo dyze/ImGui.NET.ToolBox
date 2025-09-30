@@ -47,17 +47,20 @@ namespace ImGuiNET
 
             ImGui.OpenPopup(dialogInfo.Title);
 
-            if (ImGui.BeginPopupModal(dialogInfo.Title, ref open, ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoCollapse))
+            if (ImGui.BeginPopupModal(dialogInfo.Title, ref open,
+                    ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoCollapse))
             {
-                if (dialogInfo.CurrentFiles.Count == 0 && dialogInfo.CurrentDirectories.Count == 0 || dialogInfo.RefreshInfo)
+                if (dialogInfo.CurrentFiles.Count == 0 && dialogInfo.CurrentDirectories.Count == 0 ||
+                    dialogInfo.RefreshInfo)
                     RefreshInfo(dialogInfo);
 
-                // Draw path
-                ImGui.Text("Path: " + dialogInfo.DirectoryPath);
+                if (dialogInfo.Type != ImGuiFileDialogType.SelectFolder)
+                    ImGui.Text("Path: " + dialogInfo.DirectoryPath);
 
                 var contentRegionWidth = ImGui.GetContentRegionAvail().X;
 
-                ImGui.BeginChild("##browser", new Vector2(contentRegionWidth, 300), ImGuiChildFlags.None, ImGuiWindowFlags.HorizontalScrollbar);
+                ImGui.BeginChild("##browser", new Vector2(contentRegionWidth, 300), ImGuiChildFlags.None,
+                    ImGuiWindowFlags.HorizontalScrollbar);
                 ImGui.Columns(4);
 
                 // Columns size
@@ -66,11 +69,13 @@ namespace ImGuiNET
                     ImGui.SetColumnWidth(0, _initialSpacingColumn0);
                     _initialSpacingColumn0 = 0.0f;
                 }
+
                 if (_initialSpacingColumn1 > 0)
                 {
                     ImGui.SetColumnWidth(1, _initialSpacingColumn1);
                     _initialSpacingColumn1 = 0.0f;
                 }
+
                 if (_initialSpacingColumn2 > 0)
                 {
                     ImGui.SetColumnWidth(2, _initialSpacingColumn2);
@@ -83,40 +88,52 @@ namespace ImGuiNET
                     _sizeSortOrder = ImGuiFileDialogSortOrder.None;
                     _dateSortOrder = ImGuiFileDialogSortOrder.None;
                     _typeSortOrder = ImGuiFileDialogSortOrder.None;
-                    _fileNameSortOrder = _fileNameSortOrder == ImGuiFileDialogSortOrder.Down ? ImGuiFileDialogSortOrder.Up : ImGuiFileDialogSortOrder.Down;
+                    _fileNameSortOrder = _fileNameSortOrder == ImGuiFileDialogSortOrder.Down
+                        ? ImGuiFileDialogSortOrder.Up
+                        : ImGuiFileDialogSortOrder.Down;
                     _fileNameSortOrderCopy = _fileNameSortOrder;
                     Sort(dialogInfo, true);
                 }
+
                 ImGui.NextColumn();
                 if (ImGui.Selectable("Size"))
                 {
                     _fileNameSortOrder = ImGuiFileDialogSortOrder.None;
                     _dateSortOrder = ImGuiFileDialogSortOrder.None;
                     _typeSortOrder = ImGuiFileDialogSortOrder.None;
-                    _sizeSortOrder = _sizeSortOrder == ImGuiFileDialogSortOrder.Down ? ImGuiFileDialogSortOrder.Up : ImGuiFileDialogSortOrder.Down;
+                    _sizeSortOrder = _sizeSortOrder == ImGuiFileDialogSortOrder.Down
+                        ? ImGuiFileDialogSortOrder.Up
+                        : ImGuiFileDialogSortOrder.Down;
                     _sizeSortOrderCopy = _sizeSortOrder;
                     Sort(dialogInfo, true);
                 }
+
                 ImGui.NextColumn();
                 if (ImGui.Selectable("Type"))
                 {
                     _fileNameSortOrder = ImGuiFileDialogSortOrder.None;
                     _dateSortOrder = ImGuiFileDialogSortOrder.None;
                     _sizeSortOrder = ImGuiFileDialogSortOrder.None;
-                    _typeSortOrder = _typeSortOrder == ImGuiFileDialogSortOrder.Down ? ImGuiFileDialogSortOrder.Up : ImGuiFileDialogSortOrder.Down;
+                    _typeSortOrder = _typeSortOrder == ImGuiFileDialogSortOrder.Down
+                        ? ImGuiFileDialogSortOrder.Up
+                        : ImGuiFileDialogSortOrder.Down;
                     _typeSortOrderCopy = _typeSortOrder;
                     Sort(dialogInfo, true);
                 }
+
                 ImGui.NextColumn();
                 if (ImGui.Selectable("Date"))
                 {
                     _fileNameSortOrder = ImGuiFileDialogSortOrder.None;
                     _sizeSortOrder = ImGuiFileDialogSortOrder.None;
                     _typeSortOrder = ImGuiFileDialogSortOrder.None;
-                    _dateSortOrder = _dateSortOrder == ImGuiFileDialogSortOrder.Down ? ImGuiFileDialogSortOrder.Up : ImGuiFileDialogSortOrder.Down;
+                    _dateSortOrder = _dateSortOrder == ImGuiFileDialogSortOrder.Down
+                        ? ImGuiFileDialogSortOrder.Up
+                        : ImGuiFileDialogSortOrder.Down;
                     _dateSortOrderCopy = _dateSortOrder;
                     Sort(dialogInfo, true);
                 }
+
                 ImGui.NextColumn();
 
                 // File Separator
@@ -149,6 +166,7 @@ namespace ImGuiNET
                             Sort(dialogInfo, true);
                         }
                     }
+
                     ImGui.NextColumn();
                     ImGui.TextUnformatted("-");
                     ImGui.NextColumn();
@@ -160,119 +178,24 @@ namespace ImGuiNET
                     index++;
                 }
 
-                // Draw directories
-                for (var i = 0; i < directories.Count; ++i)
-                {
-                    var directoryEntry = dialogInfo.CurrentDirectories[i];
-                    var directoryPath = directoryEntry;
-                    var directoryName = directoryEntry.Name;
+                index = RenderDirectories(dialogInfo, directories, index);
 
-                    contentRegionWidth = ImGui.GetContentRegionAvail().X;
+                if(dialogInfo.Type != ImGuiFileDialogType.SelectFolder)
+                    complete = RenderFiles(dialogInfo, files, index, complete);
 
-                    if (ImGui.Selectable(directoryName, dialogInfo.CurrentIndex == index, ImGuiSelectableFlags.AllowDoubleClick, new Vector2(contentRegionWidth, 0)))
-                    {
-                        dialogInfo.CurrentIndex = index;
-
-                        if (ImGui.IsMouseDoubleClicked(0))
-                        {
-                            dialogInfo.DirectoryPath = directoryPath;
-                            dialogInfo.RefreshInfo = true;
-                            Sort(dialogInfo, true);
-                        }
-                    }
-
-                    ImGui.NextColumn();
-                    ImGui.TextUnformatted("-");
-                    ImGui.NextColumn();
-                    ImGui.TextUnformatted("<directory>");
-                    ImGui.NextColumn();
-
-                    var lastWriteTime = directoryEntry.LastWriteTime;
-                    ImGui.TextUnformatted(lastWriteTime.ToString());
-                    ImGui.NextColumn();
-
-                    index++;
-                }
-
-                // Draw files
-                for (var i = 0; i < files.Count; ++i)
-                {
-                    var fileEntry = dialogInfo.CurrentFiles[i];
-                    var filePath = fileEntry.FullName;
-                    var fileName = fileEntry.Name;
-
-                    contentRegionWidth = ImGui.GetContentRegionAvail().X;
-
-                    if (ImGui.Selectable(fileName, dialogInfo.CurrentIndex == index, ImGuiSelectableFlags.AllowDoubleClick, new Vector2(contentRegionWidth, 0)))
-                    {
-                        dialogInfo.CurrentIndex = index;
-                        dialogInfo.FileName = fileName;
-
-                        if (ImGui.IsMouseDoubleClicked(0))
-                        {
-                            complete = OnOpenPressed(dialogInfo);
-
-                        }
-                    }
-
-                    ImGui.NextColumn();
-                    ImGui.TextUnformatted(fileEntry.Length.ToString());
-                    ImGui.NextColumn();
-                    ImGui.TextUnformatted(Path.GetExtension(filePath));
-                    ImGui.NextColumn();
-
-                    var lastWriteTime = fileEntry.LastWriteTime;
-                    ImGui.TextUnformatted(lastWriteTime.ToString());
-                    ImGui.NextColumn();
-
-                    index++;
-                }
                 ImGui.EndChild();
 
-                // Draw filename
-                var fileNameBufferSize = 200;
-
-                var fileNameStr = dialogInfo.FileName;
-                var fileNameSize = fileNameStr.Length;
-
-                if (fileNameSize >= fileNameBufferSize)
-                    fileNameSize = fileNameBufferSize - 1;
-
-                var fileNameBuffer = fileNameStr.Substring(0, fileNameSize);
-
-                contentRegionWidth = ImGui.GetContentRegionAvail().X;
-
-                ImGui.PushID("filename");
-                ImGui.PushItemWidth(contentRegionWidth * 0.7f);
-                if (ImGui.InputTextWithHint("", "select a file first", ref fileNameBuffer, (uint)fileNameBufferSize))
+                if (dialogInfo.Type == ImGuiFileDialogType.SelectFolder)
                 {
-                    dialogInfo.FileName = fileNameBuffer;
-                    dialogInfo.CurrentIndex = 0;
-                }
-                ImGui.PopID();
+                    dialogInfo.ResultPath = Path.Combine(dialogInfo.DirectoryPath.FullName, dialogInfo.DirectoryName);
 
-                ImGui.PushID("type");
-                ImGui.SameLine();
-                ImGui.PushItemWidth(contentRegionWidth * 0.3f);
-                if (ImGui.BeginCombo("Type", dialogInfo.CurrentExtension.Item1))
-                {
-                    foreach (var (extension, description) in dialogInfo.Extensions)
-                    {
-                        var selected = extension == dialogInfo.CurrentExtension.Item1;
-                        ImGui.PushItemWidth(contentRegionWidth * 0.3f);
-                        if (ImGui.Selectable(extension, selected))
-                        {
-                            dialogInfo.CurrentExtensionIndex =
-                               dialogInfo.Extensions.FindIndex(e => e.Item1 == extension);
-                            dialogInfo.RefreshInfo = true;
-                        }
-                        if (selected)
-                            ImGui.SetItemDefaultFocus();
-                    }
-
-                    ImGui.EndCombo();
+                    RenderDirectoryName(dialogInfo);
                 }
-                ImGui.PopID();
+                else
+                    RenderFilename(dialogInfo);
+
+                if (dialogInfo.Type != ImGuiFileDialogType.SelectFolder)
+                    RenderExtension(dialogInfo);
 
 
                 // Buttons
@@ -288,7 +211,7 @@ namespace ImGuiNET
 
                 if (dialogInfo.Type == ImGuiFileDialogType.OpenFile)
                 {
-                    if(ColoredButton.Run(Color.Green, "Open"))
+                    if (ColoredButton.Run(Color.Green, "Open"))
                     {
                         complete = OnOpenPressed(dialogInfo);
                     }
@@ -300,11 +223,19 @@ namespace ImGuiNET
                         complete = OnSavePressed(dialogInfo);
                     }
                 }
-
-                //if (dialogInfo.ErrorMessage != "")
+                else if (dialogInfo.Type == ImGuiFileDialogType.SelectFolder)
                 {
-                    ImGui.TextColored(TypeConverters.ColorToVector4(Color.Red), dialogInfo.ErrorMessage);
+
+
+                    if (ColoredButton.Run(Color.Green, "Select"))
+                    {
+                        complete = OnSelectPressed(dialogInfo);
+                    }
                 }
+
+
+                ImGui.TextColored(TypeConverters.ColorToVector4(Color.Red), dialogInfo.ErrorMessage);
+
 
                 ImGui.End();
             }
@@ -316,6 +247,167 @@ namespace ImGuiNET
                 open = false;
 
             return complete;
+        }
+
+        private static ulong RenderDirectories(FileDialogInfo dialogInfo, List<DirectoryInfo> directories, ulong index)
+        {
+            // Draw directories
+            for (var i = 0; i < directories.Count; ++i)
+            {
+                var directoryEntry = dialogInfo.CurrentDirectories[i];
+                var directoryPath = directoryEntry;
+                var directoryName = directoryEntry.Name;
+
+                var contentRegionWidth = ImGui.GetContentRegionAvail().X;
+
+                if (ImGui.Selectable(directoryName, dialogInfo.CurrentIndex == index,
+                        ImGuiSelectableFlags.AllowDoubleClick, new Vector2(contentRegionWidth, 0)))
+                {
+                    dialogInfo.CurrentIndex = index;
+
+                    dialogInfo.DirectoryName = directoryPath.Name;
+
+                    if (ImGui.IsMouseDoubleClicked(0))
+                    {
+                        dialogInfo.DirectoryPath = directoryPath;
+                        dialogInfo.RefreshInfo = true;
+                        Sort(dialogInfo, true);
+                    }
+                }
+
+                ImGui.NextColumn();
+                ImGui.TextUnformatted("-");
+                ImGui.NextColumn();
+                ImGui.TextUnformatted("<directory>");
+                ImGui.NextColumn();
+
+                var lastWriteTime = directoryEntry.LastWriteTime;
+                ImGui.TextUnformatted(lastWriteTime.ToString());
+                ImGui.NextColumn();
+
+                index++;
+            }
+
+            return index;
+        }
+
+        private static bool RenderFiles(FileDialogInfo dialogInfo, List<FileInfo> files, ulong index, bool complete)
+        {
+            // Draw files
+            for (var i = 0; i < files.Count; ++i)
+            {
+                var fileEntry = dialogInfo.CurrentFiles[i];
+                var filePath = fileEntry.FullName;
+                var fileName = fileEntry.Name;
+
+                var contentRegionWidth = ImGui.GetContentRegionAvail().X;
+
+                if (ImGui.Selectable(fileName, dialogInfo.CurrentIndex == index,
+                        ImGuiSelectableFlags.AllowDoubleClick, new Vector2(contentRegionWidth, 0)))
+                {
+                    dialogInfo.CurrentIndex = index;
+                    dialogInfo.FileName = fileName;
+
+                    if (ImGui.IsMouseDoubleClicked(0))
+                    {
+                        complete = OnOpenPressed(dialogInfo);
+                    }
+                }
+
+                ImGui.NextColumn();
+                ImGui.TextUnformatted(fileEntry.Length.ToString());
+                ImGui.NextColumn();
+                ImGui.TextUnformatted(Path.GetExtension(filePath));
+                ImGui.NextColumn();
+
+                var lastWriteTime = fileEntry.LastWriteTime;
+                ImGui.TextUnformatted(lastWriteTime.ToString());
+                ImGui.NextColumn();
+
+                index++;
+            }
+
+            return complete;
+        }
+
+        private static void RenderFilename(FileDialogInfo dialogInfo)
+        {
+            var fileNameBufferSize = 200;
+
+            var fileNameStr = dialogInfo.FileName;
+            var fileNameSize = fileNameStr.Length;
+
+            if (fileNameSize >= fileNameBufferSize)
+                fileNameSize = fileNameBufferSize - 1;
+
+            var fileNameBuffer = fileNameStr.Substring(0, fileNameSize);
+
+            var contentRegionWidth = ImGui.GetContentRegionAvail().X;
+
+            ImGui.PushID("filename");
+            ImGui.PushItemWidth(contentRegionWidth * 0.7f);
+            if (ImGui.InputTextWithHint("", "select a file first", ref fileNameBuffer, (uint)fileNameBufferSize))
+            {
+                dialogInfo.FileName = fileNameBuffer;
+                dialogInfo.CurrentIndex = 0;
+            }
+
+            ImGui.PopID();
+        }
+
+        private static void RenderDirectoryName(FileDialogInfo dialogInfo)
+        {
+            var directoryNameBufferSize = 200;
+
+            var directoryNameStr = dialogInfo.ResultPath;
+            var directoryNameSize = directoryNameStr.Length;
+
+            if (directoryNameSize >= directoryNameBufferSize)
+                directoryNameSize = directoryNameBufferSize - 1;
+
+            var directoryNameBuffer = directoryNameStr.Substring(0, directoryNameSize);
+
+            var contentRegionWidth = ImGui.GetContentRegionAvail().X;
+
+            ImGui.PushID("directory name");
+            ImGui.PushItemWidth(contentRegionWidth);
+            if (ImGui.InputTextWithHint("", "select a directory first", ref directoryNameBuffer, (uint)directoryNameBufferSize))
+            {
+                dialogInfo.DirectoryName = directoryNameBuffer;
+                dialogInfo.CurrentIndex = 0;
+            }
+
+            ImGui.PopID();
+        }
+
+        private static void RenderExtension(FileDialogInfo dialogInfo)
+        {
+            var contentRegionWidth = ImGui.GetContentRegionAvail().X;
+
+            ImGui.PushID("type");
+            ImGui.SameLine();
+            ImGui.PushItemWidth(contentRegionWidth * 0.3f);
+            if (ImGui.BeginCombo("Type", dialogInfo.CurrentExtension.Item1))
+            {
+                foreach (var (extension, description) in dialogInfo.Extensions)
+                {
+                    var selected = extension == dialogInfo.CurrentExtension.Item1;
+                    ImGui.PushItemWidth(contentRegionWidth * 0.3f);
+                    if (ImGui.Selectable(extension, selected))
+                    {
+                        dialogInfo.CurrentExtensionIndex =
+                            dialogInfo.Extensions.FindIndex(e => e.Item1 == extension);
+                        dialogInfo.RefreshInfo = true;
+                    }
+
+                    if (selected)
+                        ImGui.SetItemDefaultFocus();
+                }
+
+                ImGui.EndCombo();
+            }
+
+            ImGui.PopID();
         }
 
         /// <summary>
@@ -365,6 +457,26 @@ namespace ImGuiNET
                     dialogInfo.ErrorMessage = "An extension is required";
                     return false;
                 }
+            }
+
+            ClearFileDialogInfo(dialogInfo);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Validate the select request
+        /// </summary>
+        /// <param name="dialogInfo"></param>
+        /// <returns>true if complete</returns>
+        private static bool OnSelectPressed(FileDialogInfo dialogInfo)
+        {
+            
+
+            if (Directory.Exists(dialogInfo.ResultPath) == false)
+            {
+                dialogInfo.ErrorMessage = "Directory doesn't exist";
+                return false;
             }
 
             ClearFileDialogInfo(dialogInfo);
@@ -434,7 +546,8 @@ namespace ImGuiNET
 
             // Sort directories
 
-            if (_fileNameSortOrder != ImGuiFileDialogSortOrder.None || _sizeSortOrder != ImGuiFileDialogSortOrder.None || _typeSortOrder != ImGuiFileDialogSortOrder.None)
+            if (_fileNameSortOrder != ImGuiFileDialogSortOrder.None ||
+                _sizeSortOrder != ImGuiFileDialogSortOrder.None || _typeSortOrder != ImGuiFileDialogSortOrder.None)
             {
                 if (_fileNameSortOrder == ImGuiFileDialogSortOrder.Down)
                 {

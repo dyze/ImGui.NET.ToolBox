@@ -1,6 +1,11 @@
 # Changelog
 
-## 0.2 in progress
+## 0.1.1
+
+### Added
+
+* Added SelectFolder type to FileDialog
+
 
 ## [0.1](https://github.com/dyze/ImGui.NET.ToolBox/releases/tag/0.1) - released on 2025-09-29
 

@@ -27,9 +27,12 @@ For detailed documentation, please read [this](./docs/index.MD).
 
 ## Roadmap
 
-For 0.1 version, I aim the following:
-* [x] Add file dialog controls
-* [x] First nuget package.
+For 0.2 version, I aim the following:
+* [ ] Improve file dialog controls
+	* [ ] add extension to file name automatically
+	* [ ] add breadcrumb to navigate to specific folders quickly
+	* [ ] add a button to create a folder
+
 
 
 ## Contributing

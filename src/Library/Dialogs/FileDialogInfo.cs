@@ -3,7 +3,8 @@ namespace ImGuiNET;
 public enum ImGuiFileDialogType
 {
     OpenFile,
-    SaveFile
+    SaveFile,
+    SelectFolder
 }
 
 public class FileDialogInfo
@@ -12,6 +13,7 @@ public class FileDialogInfo
     public ImGuiFileDialogType Type;
 
     public string FileName;
+    public string DirectoryName;
     public DirectoryInfo DirectoryPath;
     public string ResultPath;
 
@@ -23,6 +25,7 @@ public class FileDialogInfo
     public List<Tuple<string, string>> Extensions = [new("*.*", "All files")];
     public int CurrentExtensionIndex = 0;
     public Tuple<string, string> CurrentExtension => Extensions[CurrentExtensionIndex];
+
 
     public string ErrorMessage = "";
 
